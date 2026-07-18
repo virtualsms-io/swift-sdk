@@ -14,17 +14,17 @@ extension VirtualSMS {
     private struct ServicesEnvelope: Decodable { let services: [RawService]? }
 
     /// List every SMS-verification service (Telegram, WhatsApp, etc.).
-    /// `GET /api/v1/customer/services` — public, no auth.
+    /// `GET /api/v1/customer/services` — requires an API key.
     public func listServices() async throws -> [Service] {
         // Backend returns {services: [{service_id, service_name, ...}]} OR a
         // bare array; try the wrapped shape first, then fall back to a bare array.
-        if let envelope: ServicesEnvelope = try? await send(.get, "/api/v1/customer/services", auth: false),
+        if let envelope: ServicesEnvelope = try? await send(.get, "/api/v1/customer/services"),
            let raw = envelope.services {
             return raw.map {
                 Service(code: $0.serviceId ?? $0.code ?? "", name: $0.serviceName ?? $0.name ?? "", icon: $0.icon)
             }
         }
-        let raw: [RawService] = try await send(.get, "/api/v1/customer/services", auth: false)
+        let raw: [RawService] = try await send(.get, "/api/v1/customer/services")
         return raw.map {
             Service(code: $0.serviceId ?? $0.code ?? "", name: $0.serviceName ?? $0.name ?? "", icon: $0.icon)
         }
@@ -39,15 +39,15 @@ extension VirtualSMS {
     }
     private struct CountriesEnvelope: Decodable { let countries: [RawCountry]? }
 
-    /// List every available country. `GET /api/v1/customer/countries` — public, no auth.
+    /// List every available country. `GET /api/v1/customer/countries` — requires an API key.
     public func listCountries() async throws -> [Country] {
-        if let envelope: CountriesEnvelope = try? await send(.get, "/api/v1/customer/countries", auth: false),
+        if let envelope: CountriesEnvelope = try? await send(.get, "/api/v1/customer/countries"),
            let raw = envelope.countries {
             return raw.map {
                 Country(iso: $0.countryId ?? $0.iso ?? "", name: $0.countryName ?? $0.name ?? "", flag: $0.flag)
             }
         }
-        let raw: [RawCountry] = try await send(.get, "/api/v1/customer/countries", auth: false)
+        let raw: [RawCountry] = try await send(.get, "/api/v1/customer/countries")
         return raw.map {
             Country(iso: $0.countryId ?? $0.iso ?? "", name: $0.countryName ?? $0.name ?? "", flag: $0.flag)
         }

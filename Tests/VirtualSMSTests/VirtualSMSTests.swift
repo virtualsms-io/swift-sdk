@@ -27,15 +27,10 @@ final class VirtualSMSTests: XCTestCase {
             throw XCTSkip("VIRTUALSMS_API_KEY not set - skipping live smoke test")
         }
         let client = makeClient()
-        let services = try await client.listServices()
-        guard let firstService = services.first else {
-            throw XCTSkip("no services returned, cannot exercise getPrice")
-        }
-        let countries = try await client.listCountries()
-        guard let firstCountry = countries.first else {
-            throw XCTSkip("no countries returned, cannot exercise getPrice")
-        }
-        let price = try await client.getPrice(service: firstService.code, country: firstCountry.iso)
+        // A near-universally-stocked combo (matches the Rust/PHP smoke
+        // tests) rather than an arbitrary "first" service/country, which can
+        // land on a combo with no stock and turn this test flaky.
+        let price = try await client.getPrice(service: "wa", country: "GB")
         XCTAssertGreaterThanOrEqual(price.priceUsd, 0)
     }
 
