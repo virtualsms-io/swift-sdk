@@ -19,14 +19,14 @@ failure mode.
 Add the package in Xcode: **File → Add Package Dependencies…** and paste:
 
 ```
-https://github.com/virtualsms-io/virtualsms-swift-sdk
+https://github.com/virtualsms-io/swift-sdk
 ```
 
 Or add it to `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/virtualsms-io/virtualsms-swift-sdk", from: "2.0.0")
+    .package(url: "https://github.com/virtualsms-io/swift-sdk", from: "2.0.0")
 ]
 ```
 
