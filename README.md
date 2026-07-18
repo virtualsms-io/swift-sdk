@@ -213,7 +213,7 @@ Yes. Creating a VirtualSMS account issues an API key immediately, at no cost. Yo
 
 - Website: [virtualsms.io](https://virtualsms.io)
 - Docs: [virtualsms.io/docs](https://virtualsms.io/docs)
-- Dashboard: [virtualsms.io/dashboard](https://virtualsms.io/dashboard)
+- Sign up: [virtualsms.io](https://virtualsms.io) (get your API key from the dashboard after signing up) <!-- TODO: re-point to /dashboard once the frontend migration ships -->
 - Swift Package Index: [swiftpackageindex.com](https://swiftpackageindex.com/)
 
 Works with PHP, Node.js, TypeScript, Python, Ruby, .NET, Go, Rust, Swift, and Java, plus any
