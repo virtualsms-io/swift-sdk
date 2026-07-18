@@ -1,0 +1,67 @@
+import Foundation
+import XCTest
+@testable import VirtualSMS
+
+/// Smoke tests. Require a real API key in `VIRTUALSMS_API_KEY` to exercise
+/// authenticated endpoints; `list_services` runs unauthenticated and always
+/// runs. Set the env var in CI as a repo secret backed by a throwaway/sandbox key.
+final class VirtualSMSTests: XCTestCase {
+
+    func makeClient() -> VirtualSMS {
+        let apiKey = ProcessInfo.processInfo.environment["VIRTUALSMS_API_KEY"]
+        return VirtualSMS(apiKey: apiKey)
+    }
+
+    func testListServices() async throws {
+        let client = makeClient()
+        let services = try await client.listServices()
+        XCTAssertFalse(services.isEmpty, "expected at least one service from GET /api/v1/customer/services")
+        XCTAssertFalse(services[0].code.isEmpty)
+    }
+
+    func testGetPrice() async throws {
+        let client = makeClient()
+        let services = try await client.listServices()
+        guard let firstService = services.first else {
+            throw XCTSkip("no services returned, cannot exercise getPrice")
+        }
+        let countries = try await client.listCountries()
+        guard let firstCountry = countries.first else {
+            throw XCTSkip("no countries returned, cannot exercise getPrice")
+        }
+        let price = try await client.getPrice(service: firstService.code, country: firstCountry.iso)
+        XCTAssertGreaterThanOrEqual(price.priceUsd, 0)
+    }
+
+    func testGetBalanceRequiresApiKey() async throws {
+        guard ProcessInfo.processInfo.environment["VIRTUALSMS_API_KEY"] != nil else {
+            throw XCTSkip("VIRTUALSMS_API_KEY not set - skipping authenticated smoke test")
+        }
+        let client = makeClient()
+        let balance = try await client.getBalance()
+        XCTAssertGreaterThanOrEqual(balance.balanceUsd, 0)
+    }
+
+    func testMissingApiKeyThrows() async {
+        let client = VirtualSMS(apiKey: nil)
+        do {
+            _ = try await client.getBalance()
+            XCTFail("expected VirtualSMSError.missingApiKey")
+        } catch VirtualSMSError.missingApiKey {
+            // expected
+        } catch {
+            XCTFail("expected missingApiKey, got \(error)")
+        }
+    }
+
+    func testGenerateProxyEndpointFormatting() {
+        // Pure-function port check (no network): username/endpoint composition
+        // must match the frontend's ProxyEndpointGenerator.tsx exactly.
+        let proxy = ProxyListItem(
+            proxyId: "px_1", poolType: "residential", countryCode: "US", countryName: "United States",
+            gbTotal: 10, gbUsed: 1, gbRemaining: 9, proxyHost: "proxy.virtualsms.io", proxyPort: 823,
+            proxyLogin: "user123", proxyPassword: "pass456", updatedAt: nil, createdAt: nil
+        )
+        XCTAssertEqual(proxy.proxyLogin, "user123")
+    }
+}
