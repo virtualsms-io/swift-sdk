@@ -26,6 +26,15 @@ public enum VirtualSMSError: Error, LocalizedError, Sendable {
     /// call (list_orders / get_order / list_rentals / etc.) before retrying.
     case serverError(status: Int, mutating: Bool, message: String)
 
+    /// Out-of-stock / no-numbers-available. The backend has no distinct
+    /// status code for this today (confirmed gap — see SDK spec "Error
+    /// model"): a 503 with a body containing "out of stock" / "no numbers"
+    /// is otherwise indistinguishable from any other 5xx. This SDK sniffs
+    /// the message body to synthesize this case client-side. [UNVERIFIED —
+    /// backend enhancement needed: a distinct status/code, e.g. 409, would
+    /// let SDKs drop this sniff.]
+    case noNumbers(status: Int, mutating: Bool, message: String)
+
     /// Any other 4xx not covered above.
     case apiError(String)
 
@@ -60,6 +69,8 @@ public enum VirtualSMSError: Error, LocalizedError, Sendable {
                     "whether it actually succeeded, as you may have been charged. Details: \(message)"
             }
             return "VirtualSMS server error (\(status)). Safe to retry this read-only request. Details: \(message)"
+        case .noNumbers(_, _, let message):
+            return "No numbers currently available: \(message)"
         case .apiError(let message):
             return "API error: \(message)"
         case .cooldownActive(let message):

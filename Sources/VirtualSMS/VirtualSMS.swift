@@ -160,6 +160,10 @@ public final class VirtualSMS: @unchecked Sendable {
                         try await Task.sleep(nanoseconds: Self.delayNanoseconds(attempt: attempt, base: getRetryBaseDelaySeconds))
                         continue
                     }
+                    let lowerMessage = message.lowercased()
+                    if lowerMessage.contains("out of stock") || lowerMessage.contains("no numbers") {
+                        throw VirtualSMSError.noNumbers(status: http.statusCode, mutating: isMutating, message: message)
+                    }
                     throw VirtualSMSError.serverError(status: http.statusCode, mutating: isMutating, message: message)
                 default:
                     throw VirtualSMSError.apiError(message)
