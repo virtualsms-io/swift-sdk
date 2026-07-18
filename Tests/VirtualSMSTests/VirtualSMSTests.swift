@@ -2,9 +2,9 @@ import Foundation
 import XCTest
 @testable import VirtualSMS
 
-/// Smoke tests. Require a real API key in `VIRTUALSMS_API_KEY` to exercise
-/// authenticated endpoints; `list_services` runs unauthenticated and always
-/// runs. Set the env var in CI as a repo secret backed by a throwaway/sandbox key.
+/// Smoke tests. All live-API cases require a real API key in
+/// `VIRTUALSMS_API_KEY` and skip cleanly when it's unset. Set the env var in
+/// CI as a repo secret backed by a throwaway/sandbox key.
 final class VirtualSMSTests: XCTestCase {
 
     func makeClient() -> VirtualSMS {
@@ -13,6 +13,9 @@ final class VirtualSMSTests: XCTestCase {
     }
 
     func testListServices() async throws {
+        guard ProcessInfo.processInfo.environment["VIRTUALSMS_API_KEY"] != nil else {
+            throw XCTSkip("VIRTUALSMS_API_KEY not set - skipping live smoke test")
+        }
         let client = makeClient()
         let services = try await client.listServices()
         XCTAssertFalse(services.isEmpty, "expected at least one service from GET /api/v1/customer/services")
@@ -20,6 +23,9 @@ final class VirtualSMSTests: XCTestCase {
     }
 
     func testGetPrice() async throws {
+        guard ProcessInfo.processInfo.environment["VIRTUALSMS_API_KEY"] != nil else {
+            throw XCTSkip("VIRTUALSMS_API_KEY not set - skipping live smoke test")
+        }
         let client = makeClient()
         let services = try await client.listServices()
         guard let firstService = services.first else {
