@@ -1,7 +1,15 @@
 # VirtualSMS Swift SDK
 
-A native Swift client for the [VirtualSMS](https://virtualsms.io) REST API v1 -  real carrier
-mobile numbers (not VoIP), matching-country proxies, and long-term rentals, all from one API.
+## What is VirtualSMS?
+
+Official Swift SDK for the VirtualSMS API. VirtualSMS is an account verification platform for
+individuals, developers, and AI agents: one-time SMS verification, dedicated number rentals,
+matching-country proxies, and private cloud browser sessions (beta), all behind one API, one
+MCP server, and one prepaid balance. This package wraps the REST API in native Swift, backed
+by real carrier-issued mobile numbers (real physical SIM cards, not VoIP) across 2500+
+services in 145+ countries.
+
+Built for developers and AI agents: REST API, hosted MCP server, SDKs.
 
 This is **not** a wrapper or a drop-in replacement for any other SMS-verification client library.
 It talks directly to `https://virtualsms.io/api/v1/*` using `URLSession` + Swift concurrency
@@ -61,7 +69,29 @@ More flows: [`examples/ActivationFlow.swift`](examples/ActivationFlow.swift),
 
 Full docs: [virtualsms.io/docs](https://virtualsms.io/docs).
 
-## What's covered (46 methods)
+## Capabilities
+
+1. One-time SMS verification. Receive a code for a service like WhatsApp, Telegram, Discord,
+   or a dating app, on demand, from $0.05 per code.
+2. Dedicated number rentals. Hold one number for 1-30 days and receive SMS from any service
+   on that number, from $0.25/day.
+3. Matching-country proxies. Pair a number with an IP from the same country, across 223
+   proxy countries, from $1.10/GB.
+4. Private cloud browser sessions (beta). Start a country-matched browser in a live viewer
+   for the signup step itself, invite-only.
+
+## Why real SIM cards
+
+VirtualSMS runs on real carrier-issued mobile numbers, backed by real physical SIM cards,
+not VoIP. Services like WhatsApp, Telegram, Discord, and dating apps run a carrier lookup
+before they send a code, and VoIP or virtual numbers fail that check more often than a real
+SIM does. A physical SIM on a real carrier network reads like any other phone on that network,
+carriers like Vodafone, O2, and T-Mobile depending on the country, which is part of why
+VirtualSMS holds a 95%+ success rate across 2500+ services in 145+ countries.
+
+## API coverage
+
+What's covered (46 methods):
 
 | Group | Methods |
 |---|---|
@@ -147,6 +177,47 @@ declares the supported platforms/Swift versions for the badge/compatibility matr
 
 - Swift 5.9+
 - macOS 12+, iOS 15+, tvOS 15+, or watchOS 8+ (async/await + `URLSession`)
+
+## AI agents and MCP
+
+This package is the API-client half of VirtualSMS: typed methods you call directly from your
+own Swift code. VirtualSMS also exposes a hosted MCP server, so an AI agent such as Claude or
+Cursor can request a number, wait for a code, or manage a rental the same way this package
+does, without you writing the glue code yourself. See
+[virtualsms.io/docs](https://virtualsms.io/docs) for MCP server details.
+
+## FAQ
+
+### What is VirtualSMS?
+VirtualSMS is an account verification platform for individuals, developers, and AI agents. It combines one-time SMS verification, dedicated number rentals, matching-country proxies, and private cloud browser sessions behind one API, one MCP server, and one prepaid balance.
+
+### Does VirtualSMS use real SIM cards or VoIP numbers?
+VirtualSMS uses real carrier-issued mobile numbers, backed by real physical SIM cards, not VoIP. Many services, including WhatsApp, Telegram, Discord, and dating apps, reject VoIP and virtual numbers at signup; a real physical SIM on a real carrier network passes that check far more often, which is reflected in a 95%+ success rate.
+
+### Which services and countries does VirtualSMS support?
+VirtualSMS covers 2500+ services across 145+ countries for SMS verification and number rentals, plus matching-country proxies across 223 proxy countries. Coverage spans messaging apps, social platforms, marketplaces, dating apps, and financial services.
+
+### Can I rent a number, or only buy one-time codes?
+Both. Buy a single one-time code from $0.05, or rent a dedicated number for 1-30 days from $0.25/day to receive SMS from any service on that number for the rental window.
+
+### Does VirtualSMS work with AI agents and MCP?
+Yes. VirtualSMS exposes a hosted MCP server plus a REST API and official SDKs in nine languages, so an AI agent can request a number, wait for a code, or manage a rental the same way a developer would call the API directly.
+
+### How much does VirtualSMS cost?
+Pricing is pay-as-you-go from one prepaid balance: SMS verification from $0.05 per code, number rentals from $0.25/day, and proxies from $1.10/GB. There is no subscription requirement.
+
+### Is there a free API key?
+Yes. Creating a VirtualSMS account issues an API key immediately, at no cost. You only spend from your prepaid balance when you place an order: an activation, a rental, or a proxy.
+
+## Links
+
+- Website: [virtualsms.io](https://virtualsms.io)
+- Docs: [virtualsms.io/docs](https://virtualsms.io/docs)
+- Dashboard: [virtualsms.io/dashboard](https://virtualsms.io/dashboard)
+- Swift Package Index: [swiftpackageindex.com](https://swiftpackageindex.com/)
+
+Works with PHP, Node.js, TypeScript, Python, Ruby, .NET, Go, Rust, Swift, and Java, plus any
+HTTP client and MCP-compatible AI agents such as Claude and Cursor.
 
 ## License
 
