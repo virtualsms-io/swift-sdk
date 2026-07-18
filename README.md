@@ -1,6 +1,6 @@
 # VirtualSMS Swift SDK
 
-A native Swift client for the [VirtualSMS](https://virtualsms.io) REST API v1 — real carrier
+A native Swift client for the [VirtualSMS](https://virtualsms.io) REST API v1 -  real carrier
 mobile numbers (not VoIP), matching-country proxies, and long-term rentals, all from one API.
 
 This is **not** a wrapper or a drop-in replacement for any other SMS-verification client library.
@@ -10,7 +10,7 @@ failure mode.
 
 - **Platforms:** macOS 12+, iOS 15+, tvOS 15+, watchOS 8+
 - **Swift tools version:** 5.9
-- **Dependencies:** none — `Foundation` + `URLSession` only
+- **Dependencies:** none -  `Foundation` + `URLSession` only
 
 ## Installation
 
@@ -19,20 +19,20 @@ failure mode.
 Add the package in Xcode: **File → Add Package Dependencies…** and paste:
 
 ```
-https://github.com/virtualsms-io/swift-sdk
+https://github.com/virtualsms-io/virtualsms-swift-sdk
 ```
 
 Or add it to `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/virtualsms-io/swift-sdk", from: "2.0.0")
+    .package(url: "https://github.com/virtualsms-io/virtualsms-swift-sdk", from: "2.0.0")
 ]
 ```
 
 ## Quickstart
 
-1. **Get an API key** — sign up at [virtualsms.io](https://virtualsms.io), then Settings → API Keys.
+1. **Get an API key** -  sign up at [virtualsms.io](https://virtualsms.io), then Settings → API Keys.
 2. **Buy a number**, then **poll or wait for the code**:
 
 ```swift
@@ -74,7 +74,7 @@ Full docs: [virtualsms.io/docs](https://virtualsms.io/docs).
 | Webhooks | `listWebhooks`, `createWebhook`, `getWebhook`, `updateWebhook`, `deleteWebhook`, `testWebhook`, `listWebhookDeliveries` |
 
 Some methods (`getSms`, `waitForSms`, `orderHistory`, `cancelAllOrders`, `searchServices`,
-`findCheapest`, `getStats`, `getRental`, `generateProxyEndpoint`) are **client-side helpers** —
+`findCheapest`, `getStats`, `getRental`, `generateProxyEndpoint`) are **client-side helpers** - 
 they compose one or more REST calls and do the aggregation/filtering locally, matching the
 reference implementation exactly. They're documented inline with `///` doc comments on every
 method.
@@ -84,8 +84,8 @@ method.
 Both tiers carry the **same refund terms**: full refund within 20 minutes of purchase and before
 the first SMS arrives.
 
-- **`.fullAccess`** — local SIM inventory, usable for any service, longer durations, optional auto-renew.
-- **`.platform`** — sourced via our global supplier network, locked to **one** chosen service per
+- **`.fullAccess`** -  local SIM inventory, usable for any service, longer durations, optional auto-renew.
+- **`.platform`** -  sourced via our global supplier network, locked to **one** chosen service per
   number, 24/72/168h durations only.
 
 ```swift
@@ -104,7 +104,7 @@ do {
 } catch VirtualSMSError.rateLimited {
     print("slow down")
 } catch VirtualSMSError.serverError(let status, let mutating, let message) {
-    // `mutating == true` means this happened on a POST/PUT/PATCH/DELETE —
+    // `mutating == true` means this happened on a POST/PUT/PATCH/DELETE - 
     // the purchase/cancel/etc. may have gone through despite the error.
     // NEVER blindly retry; verify with a read call first (listOrders, getOrder, ...).
     print("server error \(status): \(message)")
@@ -132,7 +132,7 @@ print("Signing secret: \(webhook.webhook.secret ?? "")")
 ## Publishing (Swift Package Index)
 
 This package is discoverable on the [Swift Package Index](https://swiftpackageindex.com/) purely
-by being a public repo with semver Git tags — **no publish account, token, or CI step required**.
+by being a public repo with semver Git tags -  **no publish account, token, or CI step required**.
 A new version ships by pushing a tag:
 
 ```bash
