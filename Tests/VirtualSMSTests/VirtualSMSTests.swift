@@ -7,13 +7,28 @@ import XCTest
 /// CI as a repo secret backed by a throwaway/sandbox key.
 final class VirtualSMSTests: XCTestCase {
 
+    /// `nil` unless `VIRTUALSMS_API_KEY` is set to a *non-empty* value.
+    ///
+    /// GitHub Actions' `env: VIRTUALSMS_API_KEY: ${{ secrets.VIRTUALSMS_API_KEY }}`
+    /// always defines the env var, even when the referenced secret doesn't
+    /// exist on the repo — it just resolves to an empty string. A plain
+    /// `environment["VIRTUALSMS_API_KEY"] != nil` check therefore can't tell
+    /// "no key configured" from "empty key configured" and lets live-API
+    /// tests run with a blank key, which the SDK correctly rejects with
+    /// `VirtualSMSError.missingApiKey` (see `requireApiKey()`). Treating an
+    /// empty string the same as absent keeps skip-when-unset working
+    /// regardless of that GitHub Actions quirk.
+    var liveApiKey: String? {
+        let raw = ProcessInfo.processInfo.environment["VIRTUALSMS_API_KEY"]
+        return (raw?.isEmpty ?? true) ? nil : raw
+    }
+
     func makeClient() -> VirtualSMS {
-        let apiKey = ProcessInfo.processInfo.environment["VIRTUALSMS_API_KEY"]
-        return VirtualSMS(apiKey: apiKey)
+        return VirtualSMS(apiKey: liveApiKey)
     }
 
     func testListServices() async throws {
-        guard ProcessInfo.processInfo.environment["VIRTUALSMS_API_KEY"] != nil else {
+        guard liveApiKey != nil else {
             throw XCTSkip("VIRTUALSMS_API_KEY not set - skipping live smoke test")
         }
         let client = makeClient()
@@ -23,7 +38,7 @@ final class VirtualSMSTests: XCTestCase {
     }
 
     func testGetPrice() async throws {
-        guard ProcessInfo.processInfo.environment["VIRTUALSMS_API_KEY"] != nil else {
+        guard liveApiKey != nil else {
             throw XCTSkip("VIRTUALSMS_API_KEY not set - skipping live smoke test")
         }
         let client = makeClient()
@@ -35,7 +50,7 @@ final class VirtualSMSTests: XCTestCase {
     }
 
     func testGetBalanceRequiresApiKey() async throws {
-        guard ProcessInfo.processInfo.environment["VIRTUALSMS_API_KEY"] != nil else {
+        guard liveApiKey != nil else {
             throw XCTSkip("VIRTUALSMS_API_KEY not set - skipping authenticated smoke test")
         }
         let client = makeClient()
